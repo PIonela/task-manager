@@ -4,9 +4,43 @@ import TaskCard from "../TaskCard/TaskCard";
 import "./ContainerBox.css";
 import NoTasks from "../NoTasks/NoTasks";
 import Modal from "../Modal/Modal";
+import ControlPanel from "../ControlPanel/ControlPanel";
 
 const ContainerBox = () => {
-  const [taskList, setTaskList] = useState([]);
+  const data = [
+    {
+      taskName: "task1",
+      taskDate: "12-12-2024",
+      taskDescription: "desc1",
+      taskStatus: "Todo",
+    },
+
+    {
+      taskName: "task2",
+      taskDate: "12-12-2024",
+      taskDescription: "desc2",
+      taskStatus: "Pending",
+    },
+
+    {
+      taskName: "task3",
+      taskDate: "12-12-2024",
+      taskDescription: "desc3",
+      taskStatus: "In Progress",
+    },
+
+    {
+      taskName: "task4",
+      taskDate: "12-12-2024",
+      taskDescription: "desc4",
+      taskStatus: "Completed",
+    },
+  ];
+  const [taskList, setTaskList] = useState(data);
+  const [isMOpen, setIsMOpen] = useState(false);
+
+  const openModal = () => setIsMOpen(true);
+  const closeModal = () => setIsMOpen(false);
 
   const onAddTask = (task) => {
     setTaskList([
@@ -23,8 +57,7 @@ const ContainerBox = () => {
   console.log(taskList);
   return (
     <div className="container-box">
-      <h1>Tasks</h1>
-      <h4>Your tasks in your space.</h4>
+      <ControlPanel onClickFunction={openModal} />
       {/* randare conditionala */}
       {taskList.length > 0 ? (
         <div className="tasks">
@@ -39,12 +72,12 @@ const ContainerBox = () => {
           ))}
         </div>
       ) : (
-        <NoTasks />
+        <NoTasks onClickFunction={openModal} />
       )}
 
       {/* <Modal /> */}
-      <Modal isOpen={true}>
-        <CreateTaskForm addTask={onAddTask} />
+      <Modal isOpen={isMOpen} onClose={closeModal}>
+        <CreateTaskForm addTask={onAddTask} closeModal={closeModal} />
       </Modal>
     </div>
   );
