@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./CreateTaskForm.css";
 import Button from "../Button/Button";
 
@@ -7,6 +7,7 @@ const CreateTaskForm = (props) => {
   // const [taskDate, setTaskDate] = useState("");
   // const [taskDesc, setTaskDesc] = useState("");
   const [taskData, setTaskData] = useState({ name: "", date: "", desc: "" });
+  const [formErrors, setFormErrors] = useState({});
 
   const handleTaskName = (event) => {
     // setTaskName(event.target.value);
@@ -45,13 +46,49 @@ const CreateTaskForm = (props) => {
     setTaskData({ name: "", date: "", desc: "" });
   };
 
+  const validateForm = () => {
+    let errors = {};
+
+    if (!taskData.name) {
+      errors.nameError = "Task name is required!";
+    } else if (taskData.name.length < 3) {
+      errors.nameError = "Task name must have min 3 characters";
+    }
+
+    if (!taskData.date) {
+      errors.dateError = "Task date is required!";
+    } else if (new Date(taskData.date) < new Date()) {
+      errors.dateError = "Task date should not be in the past";
+    }
+
+    if (!taskData.desc) {
+      errors.descError = "Task description is required!";
+    } else if (taskData.desc.length < 3) {
+      errors.descError = "Task description must have min 3 characters";
+    } else if (taskData.desc.length > 30) {
+      errors.descError = "Task description must have max 30 characters";
+    }
+
+    setFormErrors({ ...errors });
+
+    let isValid = Object.keys(errors).length < 1; // true nu avem errori, false avem errori
+
+    return isValid;
+  };
+
   const handleSubmitForm = (event) => {
     event.preventDefault();
+    let isValid = validateForm();
     // props.addTask(newTask);
-    props.addTask(taskData);
-    resetState();
-    if (props.closeModal) {
-      props.closeModal();
+
+    if (isValid) {
+      props.addTask(taskData);
+      resetState();
+      if (props.closeModal) {
+        props.closeModal();
+      }
+    } else {
+      console.log("Avem erori!");
     }
   };
 
@@ -66,7 +103,12 @@ const CreateTaskForm = (props) => {
           onChange={handleTaskName}
           // value={taskName}
           value={taskData.name}
+          // required
+          className={formErrors.nameError && "input-error"}
         />
+        {formErrors.nameError && (
+          <span className="error-message">{formErrors.nameError}</span>
+        )}
 
         <label htmlFor="taskDate">Due Date</label>
         <input
@@ -75,7 +117,11 @@ const CreateTaskForm = (props) => {
           onChange={handleTaskDate}
           // value={taskDate}
           value={taskData.date}
+          className={formErrors.dateError && "input-error"}
         />
+        {formErrors.dateError && (
+          <span className="error-message">{formErrors.dateError}</span>
+        )}
 
         <label htmlFor="taskDesc">Task Description</label>
         <textarea
@@ -83,7 +129,11 @@ const CreateTaskForm = (props) => {
           onChange={handleTaskDesc}
           // value={taskDesc}
           value={taskData.desc}
+          className={formErrors.descError && "input-error"}
         ></textarea>
+        {formErrors.descError && (
+          <span className="error-message">{formErrors.descError}</span>
+        )}
         <Button text="Create Task" />
       </form>
     </div>

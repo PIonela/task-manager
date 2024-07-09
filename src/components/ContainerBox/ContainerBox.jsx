@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CreateTaskForm from "../CreateTaskForm/CreateTaskForm";
 import TaskCard from "../TaskCard/TaskCard";
 import "./ContainerBox.css";
@@ -55,6 +55,10 @@ const ContainerBox = () => {
     ]);
   };
   console.log(taskList);
+
+  useEffect(() => {
+    localStorage.setItem("tasks", JSON.stringify(taskList));
+  }, [taskList]);
   return (
     <div className="container-box">
       <ControlPanel onClickFunction={openModal} />
