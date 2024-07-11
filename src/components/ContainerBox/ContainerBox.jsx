@@ -5,39 +5,11 @@ import "./ContainerBox.css";
 import NoTasks from "../NoTasks/NoTasks";
 import Modal from "../Modal/Modal";
 import ControlPanel from "../ControlPanel/ControlPanel";
+import { useTaskContext } from "../../context/TaskContext";
 
 const ContainerBox = () => {
-  const data = [
-    {
-      taskName: "task1",
-      taskDate: "12-12-2024",
-      taskDescription: "desc1",
-      taskStatus: "Todo",
-    },
-
-    {
-      taskName: "task2",
-      taskDate: "12-12-2024",
-      taskDescription: "desc2",
-      taskStatus: "Pending",
-    },
-
-    {
-      taskName: "task3",
-      taskDate: "12-12-2024",
-      taskDescription: "desc3",
-      taskStatus: "In Progress",
-    },
-
-    {
-      taskName: "task4",
-      taskDate: "12-12-2024",
-      taskDescription: "desc4",
-      taskStatus: "Completed",
-    },
-  ];
-  const [taskList, setTaskList] = useState(data);
   const [isMOpen, setIsMOpen] = useState(false);
+  const { taskList, setTaskList } = useTaskContext();
 
   const openModal = () => setIsMOpen(true);
   const closeModal = () => setIsMOpen(false);
@@ -59,6 +31,7 @@ const ContainerBox = () => {
   useEffect(() => {
     localStorage.setItem("tasks", JSON.stringify(taskList));
   }, [taskList]);
+
   return (
     <div className="container-box">
       <ControlPanel onClickFunction={openModal} />
